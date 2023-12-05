@@ -1,9 +1,8 @@
 /*
   At Doom's Gate (H1M1)
   Connect a piezo buzzer or speaker to pin 11 or select a new pin.
-  More songs available at https://github.com/robsoncouto/arduino-songs
-
-                                              Robson Couto, 2019
+  You can find more songs at https://github.com/robsoncouto/arduino-songs
+                                              
 */
 #define NOTE_B0  31
 #define NOTE_C1  33

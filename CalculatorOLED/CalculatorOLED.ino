@@ -1,7 +1,7 @@
 #include <Arduino_ST7789_Fast.h>
 #include <LinkedList.h>
 #include <string.h>
-Arduino_ST7789 lcd = Arduino_ST7789(7, 8);
+Arduino_ST7789 lcd = Arduino_ST7789(7, 8); //set lcd pins
 
 
 

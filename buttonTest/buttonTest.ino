@@ -8,6 +8,7 @@ void setup() {
 }
 
 void loop() {
+  //DEBOUNCING BUTTON
   buttonState = digitalRead(buttonPin); // Read the current state of the button
   Serial.println("NOT");
   // Check for a button release

@@ -33,7 +33,7 @@
  */
 
 // Define pin 10 for buzzer, you can use any other digital pins (Pin 0-13)
-const int buzzer = 2;
+const int buzzer = 12;
 
 // Change to 0.5 for a slower version of the song, 1.25 for a faster version
 const float songSpeed = 1.0;

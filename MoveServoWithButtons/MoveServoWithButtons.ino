@@ -14,7 +14,7 @@ void setup() {
   digitalWrite(buttonPin1,HIGH);
   digitalWrite(buttonPin2,HIGH);
   
-  myServo.attach(12);
+  myServo.attach(12); //Servo pin
   Serial.begin(9600);
 }
 
