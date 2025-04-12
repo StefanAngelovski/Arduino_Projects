@@ -1,4 +1,4 @@
-// Define the pin numbers for the Gas Sensor
+y// Define the pin numbers for the Soil humidity sensor
 const int sensorPin = 4;
 
 void setup() {
@@ -6,6 +6,6 @@ void setup() {
 }
 
 void loop() {
-  Serial.println(analogRead(sensorPin)>2100?"Danger":"");
+  Serial.println(analogRead(sensorPin)); //Inverse value
   delay(100);                             
 }
