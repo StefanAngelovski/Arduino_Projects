@@ -1,32 +1,61 @@
 #include <Wire.h>
 #include "Adafruit_TCS34725.h"
 
-// Define I2C pins (SDA = 4, SCL = 5)
-#define SDA_PIN 4
-#define SCL_PIN 5
+// Can remove for Arduino devices
+const int SDA_PIN = 4;
+const int SCL_PIN = 5;
+const int LED_PIN = 9; // LED control pin for the sensor
 
-// Initialize sensor with specific integration time and gain
-Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_24MS, TCS34725_GAIN_4X);
+// Initialize the TCS34725 sensor
+Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_614MS, TCS34725_GAIN_1X);
 
 void setup() {
-  Serial.begin(115200);
-  Wire.begin(SDA_PIN, SCL_PIN); // Start I2C with custom pins
-
-  if (!tcs.begin()) {
-    Serial.println("Sensor not found. Check wiring!");
-    while (1); // Halt if sensor fails
+  Serial.begin(9600);
+  pinMode(LED_PIN, OUTPUT);
+  digitalWrite(LED_PIN, LOW);
+  Wire.begin(SDA_PIN, SCL_PIN); // Initialize I2C with custom pins for ESP devices ONLY
+  if (tcs.begin()) {
+    Serial.println("Found TCS34725 sensor");
+    tcs.setInterrupt(true);  // Turn off LED until needed
+  } else {
+    Serial.println("No TCS34725 found ... check your connections");
+    while (1); // Halt if sensor is not found
   }
-  Serial.println("TCS34725 RGB sensor ready!");
 }
 
 void loop() {
+  digitalWrite(LED_PIN, HIGH);  // Turn on the LED for consistent lighting
+  delay(500);  // Allow the LED to stabilize
+
   uint16_t r, g, b, c;
-  
-  tcs.getRawData(&r, &g, &b, &c); // Read raw sensor data
-  Serial.printf("R: %d, G: %d, B: %d, C: %d\n", r, g, b, c);
-  if(r > 150)Serial.println("----RED----");
-  if(g > 150)Serial.println("----GREEN----");
-  if(b > 150)Serial.println("----BLUE----");
-  
-  delay(500); // Adjust delay as needed
+  tcs.getRawData(&r, &g, &b, &c);
+
+  // Normalize the color values
+  float sum = (float)c;
+  float red   = r / sum;
+  float green = g / sum;
+  float blue  = b / sum;
+
+  Serial.print("R: "); Serial.print(r);
+  Serial.print(" G: "); Serial.print(g);
+  Serial.print(" B: "); Serial.print(b);
+  Serial.print(" C: "); Serial.println(c);
+
+  uint16_t colorTemp = tcs.calculateColorTemperature(r, g, b);
+  uint16_t lux       = tcs.calculateLux(r, g, b);
+  Serial.print("Color Temp: "); Serial.print(colorTemp); Serial.print(" K - ");
+  Serial.print("Lux: "); Serial.println(lux);
+
+  // Determine the dominant color
+  if (red > green && red > blue) {
+    Serial.println("Detected Color: RED");
+  } else if (green > red && green > blue) {
+    Serial.println("Detected Color: GREEN");
+  } else if (blue > red && blue > green) {
+    Serial.println("Detected Color: BLUE");
+  } else {
+    Serial.println("Detected Color: UNKNOWN");
+  }
+
+  delay(2000);  // Wait before the next reading
 }
